@@ -62,7 +62,7 @@ const StickyNote = ({ children, className = "", rotation = 0, style = {} }: any)
 /* -------------------------------------
    Component: Photo Frame
 -------------------------------------- */
-const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {} }: any) => {
+const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {}, children }: any) => {
   return (
     <motion.div
       drag
@@ -80,6 +80,7 @@ const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {
       {caption && (
         <p className="font-hand text-lg mt-3 text-center text-brand-charcoal opacity-90 pointer-events-none">{caption}</p>
       )}
+      {children}
     </motion.div>
   );
 };
@@ -122,7 +123,7 @@ const ScrapInput = ({ placeholder, className = "" }: any) => {
 /* -------------------------------------
    Component: Sticker
 -------------------------------------- */
-const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, style = {} }: any) => {
+const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, style = {}, children }: any) => {
   return (
     <motion.div
       whileHover={{ scale: 1.15, rotate: rotation + 10 }}
@@ -144,6 +145,7 @@ const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, 
            {label}
          </span>
       )}
+      {children}
     </motion.div>
   );
 };
@@ -333,32 +335,37 @@ export default function ScrapbookWorkspace() {
 
               if (el.type === 'photo') {
                  return (
-                   <div key={el.id} className="absolute z-20 group" style={{ left: el.x, top: el.y }}>
-                     <button onClick={() => removeElement(el.id)} className="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
-                         <X size={14} />
-                     </button>
                      <PhotoFrame 
+                       key={el.id}
                        src={el.src || "https://picsum.photos/id/1018/400/300"}
                        alt="Landscape"
                        caption={el.caption || "Golden Hour Vibesss ✨"}
                        rotation={el.rotation}
-                       style={{ width: 320 }}
-                     />
-                   </div>
+                       style={{ left: el.x, top: el.y, width: 320 }}
+                       className="group z-20"
+                     >
+                       <button onClick={() => removeElement(el.id)} className="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
+                           <X size={14} />
+                       </button>
+                     </PhotoFrame>
                  );
               }
 
               if (el.type === 'sticker') {
                  return (
-                   <div key={el.id} className="group relative">
                       <Sticker 
+                        key={el.id}
                         icon={el.icon || Star} 
                         colorClass={el.colorClass || "bg-brand-orange"} 
                         label={el.label} 
                         rotation={el.rotation} 
                         style={{ left: el.x, top: el.y }}
-                      />
-                   </div>
+                        className="group z-40"
+                      >
+                         <button onClick={() => removeElement(el.id)} className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
+                           <X size={12} />
+                         </button>
+                      </Sticker>
                  );
               }
 
