@@ -1,5 +1,11 @@
 import type {Metadata} from 'next';
+import { Caveat } from 'next/font/google';
 import './globals.css'; // Global styles
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-note',
+});
 
 export const metadata: Metadata = {
   title: 'Scrapbook Workspace',
@@ -8,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en">
+    <html lang="en" className={caveat.variable}>
       <body suppressHydrationWarning className="antialiased bg-brand-cream text-brand-charcoal font-sans text-base">
         {children}
       </body>

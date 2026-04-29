@@ -81,7 +81,7 @@ const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {
          <img src={src} alt={alt} className="w-full h-auto object-cover border border-brand-cream/50 pointer-events-none" />
       </div>
       {caption && (
-        <p className="font-hand text-lg mt-3 text-center text-brand-charcoal opacity-90 pointer-events-none">{caption}</p>
+        <p className="font-note text-2xl mt-3 text-center text-brand-charcoal opacity-90 pointer-events-none">{caption}</p>
       )}
       {children}
     </motion.div>
@@ -145,7 +145,7 @@ const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, 
         </div>
       </div>
       {label && (
-         <span className="font-hand mt-1 py-0.5 px-2 bg-white/80 backdrop-blur-sm rounded text-xs text-brand-charcoal font-bold shadow-sm whitespace-nowrap rotate-[-3deg] pointer-events-none">
+         <span className="font-note mt-1 py-0.5 px-2 bg-white/80 backdrop-blur-sm rounded text-lg text-brand-charcoal font-bold shadow-sm whitespace-nowrap rotate-[-3deg] pointer-events-none">
            {label}
          </span>
       )}
@@ -471,7 +471,7 @@ export default function ScrapbookWorkspace() {
                          <X size={14} />
                        </button>
                        <WashiTape className="top-[-10px] left-[50%] transform -translate-x-1/2 rotate-[2deg] bg-red-200/40" />
-                       <h3 className="font-hand text-2xl font-bold mb-4 flex items-center gap-2 pointer-events-none whitespace-pre-wrap">
+                       <h3 className="font-note text-3xl font-bold mb-4 flex items-center gap-2 pointer-events-none whitespace-pre-wrap">
                          <Edit3 size={20} className="text-brand-orange" />
                          {el.title || "To-Do List"}
                        </h3>
@@ -564,7 +564,7 @@ export default function ScrapbookWorkspace() {
                        </div>
                        <div className="flex-1 pointer-events-none">
                           <h4 className="font-bold text-sm whitespace-pre-wrap">{el.title || "Currently playing"}</h4>
-                          <p className="text-brand-brown text-xs font-hand mt-1 whitespace-pre-wrap">{el.artist || "Lofi Chill Beats"}</p>
+                          <p className="text-brand-brown text-xl font-note mt-1 whitespace-pre-wrap">{el.artist || "Lofi Chill Beats"}</p>
                           <div className="w-full h-1.5 bg-brand-beige/50 mt-3 rounded-full overflow-hidden shadow-inset-paper">
                              <div className="h-full bg-brand-orange w-2/3" />
                           </div>
@@ -580,7 +580,7 @@ export default function ScrapbookWorkspace() {
                          <X size={14} />
                        </button>
                       <MapPin size={32} className="text-brand-brown mb-3 opacity-60 pointer-events-none" />
-                      <p className="font-hand text-xl text-brand-brown leading-relaxed pointer-events-none whitespace-pre-wrap">"{el.quote || "Let's get out there and explore the world."}"</p>
+                      <p className="font-note text-3xl text-brand-brown leading-relaxed pointer-events-none whitespace-pre-wrap">"{el.quote || "Let's get out there and explore the world."}"</p>
                    </PaperCard>
                  );
               }
@@ -592,7 +592,7 @@ export default function ScrapbookWorkspace() {
                      <button onClick={() => removeElement(el.id)} className="absolute -top-3 -right-3 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                          <X size={14} />
                      </button>
-                     <p className="font-hand text-lg text-brand-charcoal/90 leading-relaxed outline-none pointer-events-none whitespace-pre-wrap">
+                     <p className="font-note text-2xl text-brand-charcoal/90 leading-relaxed outline-none pointer-events-none whitespace-pre-wrap">
                        {el.content || "Type a new note here..."}
                      </p>
                   </StickyNote>
