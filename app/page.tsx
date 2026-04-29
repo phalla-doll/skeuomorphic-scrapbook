@@ -21,7 +21,7 @@ const WashiTape = ({ className, color = "bg-white/40" }: { className?: string, c
 /* -------------------------------------
    Component: Paper Card (Base layer)
 -------------------------------------- */
-const PaperCard = ({ children, className = "", rotation = 0, style = {} }: any) => {
+const PaperCard = ({ children, className = "", rotation = 0, style = {}, onDoubleClick }: any) => {
   return (
     <motion.div
       drag
@@ -32,6 +32,7 @@ const PaperCard = ({ children, className = "", rotation = 0, style = {} }: any) 
       animate={{ scale: 1, opacity: 1 }}
       className={`bg-brand-cream bg-paper-texture border border-brand-beige/30 shadow-paper text-brand-charcoal rounded-xl absolute cursor-grab transition-shadow hover:shadow-lifted ${className}`}
       style={style}
+      onDoubleClick={onDoubleClick}
     >
       {children}
     </motion.div>
@@ -41,7 +42,7 @@ const PaperCard = ({ children, className = "", rotation = 0, style = {} }: any) 
 /* -------------------------------------
    Component: Sticky Note
 -------------------------------------- */
-const StickyNote = ({ children, className = "", rotation = 0, style = {} }: any) => {
+const StickyNote = ({ children, className = "", rotation = 0, style = {}, onDoubleClick }: any) => {
   return (
     <motion.div
       drag
@@ -51,6 +52,7 @@ const StickyNote = ({ children, className = "", rotation = 0, style = {} }: any)
       animate={{ scale: 1, opacity: 1 }}
       className={`bg-brand-yellow shadow-paper text-brand-charcoal p-5 pb-6 absolute cursor-grab flex flex-col justify-between ${className}`}
       style={{ borderRadius: '2px 16px 4px 24px', ...style }}
+      onDoubleClick={onDoubleClick}
     >
       {/* Small top shadow illusion for peeling off */}
       <div className="absolute top-0 left-0 right-0 h-4 bg-black/5 blur-[4px] rounded-t-full -z-10 transform -translate-y-2 pointer-events-none" />
@@ -62,7 +64,7 @@ const StickyNote = ({ children, className = "", rotation = 0, style = {} }: any)
 /* -------------------------------------
    Component: Photo Frame
 -------------------------------------- */
-const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {}, children }: any) => {
+const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {}, children, onDoubleClick }: any) => {
   return (
     <motion.div
       drag
@@ -72,6 +74,7 @@ const PhotoFrame = ({ src, alt, caption, rotation = 0, className = "", style = {
       animate={{ scale: 1, opacity: 1 }}
       className={`bg-white p-3 pb-8 shadow-paper absolute cursor-grab ${className}`}
       style={{ borderRadius: '4px', ...style }}
+      onDoubleClick={onDoubleClick}
     >
       <WashiTape className="top-[-10px] left-1/2 transform -translate-x-1/2 rotate-[-5deg] bg-brand-orange/40" />
       <div className="w-full h-full relative overflow-hidden saturate-100 contrast-[1.05] shadow-inner bg-brand-beige pointer-events-none">
@@ -123,7 +126,7 @@ const ScrapInput = ({ placeholder, className = "" }: any) => {
 /* -------------------------------------
    Component: Sticker
 -------------------------------------- */
-const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, style = {}, children }: any) => {
+const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, style = {}, children, onDoubleClick }: any) => {
   return (
     <motion.div
       whileHover={{ scale: 1.15, rotate: rotation + 10 }}
@@ -134,6 +137,7 @@ const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, 
       dragMomentum={false}
       className={`absolute inline-flex flex-col items-center justify-center cursor-grab ${className}`}
       style={style}
+      onDoubleClick={onDoubleClick}
     >
       <div className={`p-3 rounded-full shadow-paper border-2 border-white bg-white pointer-events-none`}>
         <div className={`p-2 rounded-full ${colorClass} text-white shadow-inner pointer-events-none`}>
