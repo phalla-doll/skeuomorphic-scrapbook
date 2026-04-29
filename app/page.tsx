@@ -151,9 +151,139 @@ const Sticker = ({ icon: Icon, colorClass, rotation = 0, className = "", label, 
 };
 
 /* -------------------------------------
+   Component: Edit Modal
+-------------------------------------- */
+const EditModal = ({ element, onClose, onSave }: any) => {
+  const [formData, setFormData] = useState({ ...element });
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-brand-charcoal/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-all" onPointerDown={onClose}>
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        className="bg-brand-cream border border-brand-brown/20 shadow-lifted rounded-xl p-6 w-full max-w-md max-h-[85vh] overflow-y-auto custom-scrollbar"
+        onPointerDown={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+           <h3 className="font-bold text-xl font-hand flex items-center gap-2 text-brand-charcoal">
+             <Edit3 size={20} className="text-brand-orange" /> Edit Element
+           </h3>
+           <button onClick={onClose} className="p-1 hover:bg-black/5 rounded text-brand-brown/60 hover:text-brand-brown">
+             <X size={18} />
+           </button>
+        </div>
+        
+        <div className="space-y-4">
+          {element.type === 'header' && (
+            <div>
+              <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Text</label>
+              <input name="text" value={formData.text || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal" />
+            </div>
+          )}
+          {element.type === 'todo' && (
+            <div>
+              <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">List Title</label>
+              <input name="title" value={formData.title || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange mb-4 text-brand-charcoal" />
+              <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Tasks</label>
+              {formData.tasks?.map((t: any, i: number) => (
+                <div key={i} className="flex gap-2 mb-2 items-center">
+                  <input type="checkbox" checked={t.completed || false} onChange={e => {
+                    const newTasks = [...formData.tasks];
+                    newTasks[i].completed = e.target.checked;
+                    setFormData({ ...formData, tasks: newTasks });
+                  }} className="mt-0.5 accent-brand-orange" />
+                  <input value={t.text || ''} onChange={e => {
+                    const newTasks = [...formData.tasks];
+                    newTasks[i].text = e.target.value;
+                    setFormData({ ...formData, tasks: newTasks });
+                  }} className="flex-1 bg-white border border-brand-brown/20 rounded p-1.5 text-sm focus:outline-brand-orange text-brand-charcoal" placeholder="Task text..." />
+                  <button onClick={() => {
+                    const newTasks = formData.tasks.filter((_: any, index: number) => index !== i);
+                    setFormData({ ...formData, tasks: newTasks });
+                  }} className="text-red-400 hover:text-red-500 bg-white shadow-sm border border-brand-brown/10 rounded p-1"><X size={14}/></button>
+                </div>
+              ))}
+              <button className="text-xs text-brand-orange font-bold flex items-center gap-1 mt-3 px-2 py-1 hover:bg-brand-orange/10 rounded transition-colors" onClick={() => setFormData({ ...formData, tasks: [...(formData.tasks || []), { id: Date.now(), text: '', completed: false }] })}>
+                <Plus size={14} /> Add Task
+              </button>
+            </div>
+          )}
+          {element.type === 'project' && (
+            <>
+              <div>
+                <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Project Title</label>
+                <input name="title" value={formData.title || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Description</label>
+                <textarea name="description" value={formData.description || ''} onChange={handleChange} rows={4} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange resize-none text-brand-charcoal custom-scrollbar" />
+              </div>
+            </>
+          )}
+          {element.type === 'photo' && (
+            <>
+              <div>
+                <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Image Source URL</label>
+                <input name="src" value={formData.src || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal font-mono text-sm" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Caption</label>
+                <input name="caption" value={formData.caption || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal" />
+              </div>
+            </>
+          )}
+          {element.type === 'sticker' && (
+            <div>
+              <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Sticker Label</label>
+              <input name="label" value={formData.label || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal" placeholder="Optional label" />
+            </div>
+          )}
+          {element.type === 'music' && (
+            <>
+              <div>
+                <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Song Title</label>
+                <input name="title" value={formData.title || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Artist</label>
+                <input name="artist" value={formData.artist || ''} onChange={handleChange} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange text-brand-charcoal" />
+              </div>
+            </>
+          )}
+          {element.type === 'insight' && (
+            <div>
+              <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Quote</label>
+              <textarea name="quote" value={formData.quote || ''} onChange={handleChange} rows={3} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange resize-none text-brand-charcoal custom-scrollbar" />
+            </div>
+          )}
+          {element.type === 'note' && (
+            <div>
+              <label className="block text-xs font-bold text-brand-text mb-1 uppercase tracking-wider">Note Content</label>
+              <textarea name="content" value={formData.content || ''} onChange={handleChange} rows={4} className="w-full bg-white border border-brand-brown/20 rounded p-2 focus:outline-brand-orange resize-none text-brand-charcoal custom-scrollbar" />
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-brand-brown/10">
+          <button onClick={onClose} className="px-5 py-2 text-sm text-brand-text font-bold hover:bg-black/5 rounded transition-colors">Cancel</button>
+          <button onClick={() => onSave(formData)} className="px-5 py-2 text-sm bg-brand-yellow text-brand-charcoal font-bold rounded shadow-sm hover:shadow hover:bg-brand-yellow/90 active:scale-95 transition-all">Save Changes</button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+/* -------------------------------------
    Main Layout Container
 -------------------------------------- */
 export default function ScrapbookWorkspace() {
+  const [editingElementId, setEditingElementId] = useState<string | null>(null);
+
   const [elements, setElements] = useState<any[]>([
     {
       id: 'header',
@@ -161,6 +291,7 @@ export default function ScrapbookWorkspace() {
       x: 50,
       y: 50,
       rotation: -2,
+      text: 'My Scrapbook Workspace',
     },
     {
       id: 'todo',
@@ -168,6 +299,12 @@ export default function ScrapbookWorkspace() {
       x: 100,
       y: 200,
       rotation: 3,
+      title: 'To-Do List',
+      tasks: [
+        { id: 1, text: 'Find travel inspiration', completed: false },
+        { id: 2, text: 'Book flights to Kyoto', completed: false },
+        { id: 3, text: 'Design the UI', completed: true },
+      ]
     },
     {
       id: 'project',
@@ -175,6 +312,8 @@ export default function ScrapbookWorkspace() {
       x: 420,
       y: 160,
       rotation: -1,
+      title: 'Project: Sunburst',
+      description: 'Exploring a tactile, warm interface design. The goal is to make digital tools feel physical and welcoming again. No more sterile dashboards!'
     },
     {
       id: 'photo',
@@ -182,6 +321,8 @@ export default function ScrapbookWorkspace() {
       x: 880,
       y: 240,
       rotation: 4,
+      src: "https://picsum.photos/id/1018/400/300",
+      caption: "Golden Hour Vibesss ✨"
     },
     {
       id: 'sticker-fav',
@@ -199,6 +340,8 @@ export default function ScrapbookWorkspace() {
       x: 150,
       y: 550,
       rotation: -2,
+      title: 'Currently playing',
+      artist: 'Lofi Chill Beats',
     },
     {
       id: 'insight',
@@ -206,6 +349,7 @@ export default function ScrapbookWorkspace() {
       x: 600,
       y: 600,
       rotation: 5,
+      quote: "Let's get out there and explore the world."
     }
   ]);
 
@@ -215,12 +359,33 @@ export default function ScrapbookWorkspace() {
     const randomY = window.innerHeight / 2 - 150 + (Math.random() * 100 - 50);
     const randomRot = Math.random() * 8 - 4; // -4 to +4 degrees
     
+    // Set default properties based on type
+    const defaultProps: any = {};
+    if (type === 'todo') {
+       defaultProps.title = 'New List';
+       defaultProps.tasks = [{ id: Date.now(), text: 'New task', completed: false }];
+    } else if (type === 'project') {
+       defaultProps.title = 'New Project';
+       defaultProps.description = 'Write your thoughts here...';
+    } else if (type === 'music') {
+       defaultProps.title = 'Song Title';
+       defaultProps.artist = 'Artist Name';
+    } else if (type === 'insight') {
+       defaultProps.quote = 'New quote or insight...';
+    } else if (type === 'note') {
+       defaultProps.content = 'Type a new note here...';
+    } else if (type === 'photo' && !props.src) {
+       defaultProps.src = `https://picsum.photos/seed/${Date.now()}/400/300`;
+       defaultProps.caption = 'A beautiful memory';
+    }
+
     setElements([...elements, {
       id: `${type}-${Date.now()}`,
       type,
       x: randomX,
       y: randomY,
       rotation: randomRot,
+      ...defaultProps,
       ...props
     }]);
   };
@@ -267,9 +432,10 @@ export default function ScrapbookWorkspace() {
                     initial={{ rotate: el.rotation }}
                     className="absolute cursor-grab z-30"
                     style={{ left: el.x, top: el.y }}
+                    onDoubleClick={() => setEditingElementId(el.id)}
                   >
-                     <h1 className="font-hand text-5xl md:text-6xl text-brand-charcoal drop-shadow-sm font-bold relative pr-8 pointer-events-none">
-                        My Scrapbook Workspace
+                     <h1 className="font-hand text-5xl md:text-6xl text-brand-charcoal drop-shadow-sm font-bold relative pr-8 pointer-events-none whitespace-pre-wrap">
+                        {el.text || "My Scrapbook Workspace"}
                         <Sparkles size={24} className="absolute -top-3 -right-6 text-brand-yellow fill-brand-yellow" />
                      </h1>
                      <WashiTape className="top-[-12px] left-[-20px] bg-brand-beige/50 rotate-[4deg]" />
@@ -279,30 +445,24 @@ export default function ScrapbookWorkspace() {
               
               if (el.type === 'todo') {
                  return (
-                   <StickyNote key={el.id} rotation={el.rotation} style={{ left: el.x, top: el.y, width: 280 }} className="z-20 group">
+                   <StickyNote key={el.id} rotation={el.rotation} style={{ left: el.x, top: el.y, width: 280 }} className="z-20 group" onDoubleClick={() => setEditingElementId(el.id)}>
                        <button onClick={() => removeElement(el.id)} className="absolute -top-3 -right-3 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                          <X size={14} />
                        </button>
                        <WashiTape className="top-[-10px] left-[50%] transform -translate-x-1/2 rotate-[2deg] bg-red-200/40" />
-                       <h3 className="font-hand text-2xl font-bold mb-4 flex items-center gap-2 pointer-events-none">
+                       <h3 className="font-hand text-2xl font-bold mb-4 flex items-center gap-2 pointer-events-none whitespace-pre-wrap">
                          <Edit3 size={20} className="text-brand-orange" />
-                         To-Do List
+                         {el.title || "To-Do List"}
                        </h3>
                        <ul className="space-y-3 font-sans text-sm text-brand-charcoal/90">
-                          <li className="flex items-start gap-2">
-                             <span className="w-4 h-4 rounded-sm border border-brand-brown/50 mt-0.5 shadow-inset-paper bg-brand-cream/50 flex-shrink-0" />
-                             Find travel inspiration
-                          </li>
-                          <li className="flex items-start gap-2">
-                             <span className="w-4 h-4 rounded-sm border border-brand-brown/50 mt-0.5 shadow-inset-paper bg-brand-cream/50 flex-shrink-0" />
-                             Book flights to Kyoto
-                          </li>
-                          <li className="flex items-start gap-2">
-                             <span className="w-4 h-4 rounded-sm border border-brand-orange bg-brand-orange flex items-center justify-center text-white mt-0.5 flex-shrink-0">
-                               ✓
-                             </span>
-                             <span className="line-through opacity-60">Design the UI</span>
-                          </li>
+                          {el.tasks?.map((task: any, idx: number) => (
+                             <li key={idx} className="flex items-start gap-2">
+                                <span className={`w-4 h-4 rounded-sm flex items-center justify-center text-white mt-0.5 flex-shrink-0 ${task.completed ? 'border border-brand-orange bg-brand-orange' : 'border border-brand-brown/50 shadow-inset-paper bg-brand-cream/50'}`}>
+                                  {task.completed && "✓"}
+                                </span>
+                                <span className={task.completed ? 'line-through opacity-60' : ''}>{task.text}</span>
+                             </li>
+                          ))}
                        </ul>
                    </StickyNote>
                  );
@@ -310,17 +470,17 @@ export default function ScrapbookWorkspace() {
 
               if (el.type === 'project') {
                  return (
-                   <PaperCard key={el.id} rotation={el.rotation} className="z-10 p-8 pt-10 group" style={{ left: el.x, top: el.y, width: 420 }}>
+                   <PaperCard key={el.id} rotation={el.rotation} className="z-10 p-8 pt-10 group" style={{ left: el.x, top: el.y, width: 420 }} onDoubleClick={() => setEditingElementId(el.id)}>
                       <button onClick={() => removeElement(el.id)} className="absolute -top-3 -right-3 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                          <X size={14} />
                        </button>
                       <WashiTape className="top-[-10px] left-[10px] bg-brand-yellow/60 rotate-[-12deg]" />
                       <WashiTape className="top-[-8px] right-[20px] bg-brand-yellow/60 rotate-[8deg]" />
-                      <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 font-hand pointer-events-none">
-                        Project: Sunburst
+                      <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 font-hand pointer-events-none whitespace-pre-wrap">
+                        {el.title || "Project: Sunburst"}
                       </h2>
-                      <p className="text-brand-text mb-6 leading-relaxed pointer-events-none">
-                        Exploring a tactile, warm interface design. The goal is to make digital tools feel physical and welcoming again. No more sterile dashboards!
+                      <p className="text-brand-text mb-6 leading-relaxed pointer-events-none whitespace-pre-wrap">
+                        {el.description || "Exploring a tactile, warm interface design. The goal is to make digital tools feel physical and welcoming again. No more sterile dashboards!"}
                       </p>
                       <div className="flex flex-col gap-4">
                          <ScrapInput placeholder="Add a new thought..." />
@@ -343,6 +503,7 @@ export default function ScrapbookWorkspace() {
                        rotation={el.rotation}
                        style={{ left: el.x, top: el.y, width: 320 }}
                        className="group z-20"
+                       onDoubleClick={() => setEditingElementId(el.id)}
                      >
                        <button onClick={() => removeElement(el.id)} className="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                            <X size={14} />
@@ -361,6 +522,7 @@ export default function ScrapbookWorkspace() {
                         rotation={el.rotation} 
                         style={{ left: el.x, top: el.y }}
                         className="group z-40"
+                        onDoubleClick={() => setEditingElementId(el.id)}
                       >
                          <button onClick={() => removeElement(el.id)} className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                            <X size={12} />
@@ -371,7 +533,7 @@ export default function ScrapbookWorkspace() {
 
               if (el.type === 'music') {
                  return (
-                   <PaperCard key={el.id} rotation={el.rotation} className="z-30 p-6 flex flex-row items-center gap-5 group" style={{ left: el.x, top: el.y, width: 340 }}>
+                   <PaperCard key={el.id} rotation={el.rotation} className="z-30 p-6 flex flex-row items-center gap-5 group" style={{ left: el.x, top: el.y, width: 340 }} onDoubleClick={() => setEditingElementId(el.id)}>
                        <button onClick={() => removeElement(el.id)} className="absolute -top-3 -right-3 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                          <X size={14} />
                        </button>
@@ -380,8 +542,8 @@ export default function ScrapbookWorkspace() {
                          <div className="absolute inset-0 bg-[repeating-radial-gradient(circle_at_center,transparent_0,transparent_3px,rgba(255,255,255,0.05)_3px,rgba(255,255,255,0.05)_4px)]" />
                        </div>
                        <div className="flex-1 pointer-events-none">
-                          <h4 className="font-bold text-sm">Currently playing</h4>
-                          <p className="text-brand-brown text-xs font-hand mt-1">Lofi Chill Beats</p>
+                          <h4 className="font-bold text-sm whitespace-pre-wrap">{el.title || "Currently playing"}</h4>
+                          <p className="text-brand-brown text-xs font-hand mt-1 whitespace-pre-wrap">{el.artist || "Lofi Chill Beats"}</p>
                           <div className="w-full h-1.5 bg-brand-beige/50 mt-3 rounded-full overflow-hidden shadow-inset-paper">
                              <div className="h-full bg-brand-orange w-2/3" />
                           </div>
@@ -392,12 +554,12 @@ export default function ScrapbookWorkspace() {
 
               if (el.type === 'insight') {
                  return (
-                   <PaperCard key={el.id} rotation={el.rotation} className="z-10 flex flex-col justify-center items-center text-center p-8 bg-brand-beige/20 backdrop-blur-sm border-dashed border-2 border-brand-beige/80 group" style={{ left: el.x, top: el.y, width: 320 }}>
+                   <PaperCard key={el.id} rotation={el.rotation} className="z-10 flex flex-col justify-center items-center text-center p-8 bg-brand-beige/20 backdrop-blur-sm border-dashed border-2 border-brand-beige/80 group" style={{ left: el.x, top: el.y, width: 320 }} onDoubleClick={() => setEditingElementId(el.id)}>
                       <button onClick={() => removeElement(el.id)} className="absolute -top-3 -right-3 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                          <X size={14} />
                        </button>
                       <MapPin size={32} className="text-brand-brown mb-3 opacity-60 pointer-events-none" />
-                      <p className="font-hand text-xl text-brand-brown leading-relaxed pointer-events-none">"Let's get out there and explore the world."</p>
+                      <p className="font-hand text-xl text-brand-brown leading-relaxed pointer-events-none whitespace-pre-wrap">"{el.quote || "Let's get out there and explore the world."}"</p>
                    </PaperCard>
                  );
               }
@@ -405,12 +567,12 @@ export default function ScrapbookWorkspace() {
               // Generic fallback Note
               if (el.type === 'note') {
                 return (
-                  <StickyNote key={el.id} rotation={el.rotation} style={{ left: el.x, top: el.y, width: 240 }} className="z-30 group bg-yellow-100">
+                  <StickyNote key={el.id} rotation={el.rotation} style={{ left: el.x, top: el.y, width: 240 }} className="z-30 group bg-yellow-100" onDoubleClick={() => setEditingElementId(el.id)}>
                      <button onClick={() => removeElement(el.id)} className="absolute -top-3 -right-3 p-1 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 text-brand-brown hover:text-red-500">
                          <X size={14} />
                      </button>
-                     <p className="font-hand text-lg text-brand-charcoal/90 leading-relaxed outline-none" contentEditable suppressContentEditableWarning onPointerDown={(e) => e.stopPropagation()}>
-                       Type a new note here...
+                     <p className="font-hand text-lg text-brand-charcoal/90 leading-relaxed outline-none pointer-events-none whitespace-pre-wrap">
+                       {el.content || "Type a new note here..."}
                      </p>
                   </StickyNote>
                 )
@@ -600,6 +762,19 @@ export default function ScrapbookWorkspace() {
           </div>
        </div>
 
+       {/* Edit Modal */}
+       <AnimatePresence>
+         {editingElementId && (
+           <EditModal 
+             element={elements.find(el => el.id === editingElementId)} 
+             onClose={() => setEditingElementId(null)} 
+             onSave={(updatedElement: any) => {
+               setElements(elements.map(el => el.id === updatedElement.id ? updatedElement : el));
+               setEditingElementId(null);
+             }} 
+           />
+         )}
+       </AnimatePresence>
     </div>
   );
 }
