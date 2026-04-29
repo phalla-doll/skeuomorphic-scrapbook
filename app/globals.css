@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-cream: #F6EAD7;
+  --color-brand-yellow: #F2D680;
+  --color-brand-beige: #E8D3A9;
+  --color-brand-orange: #DFA76C;
+  --color-brand-brown: #B08968;
+  --color-brand-charcoal: #3A322A;
+  --color-brand-text: #5A4E40;
+
+  --font-sans: var(--font-sans, "ui-sans-serif", "system-ui", "sans-serif");
+  --font-hand: var(--font-hand, "cursive");
+
+  --shadow-paper: 2px 4px 12px rgba(176, 137, 104, 0.2), 0 1px 2px rgba(176, 137, 104, 0.15);
+  --shadow-lifted: 6px 12px 24px rgba(176, 137, 104, 0.25), 0 4px 8px rgba(176, 137, 104, 0.15);
+  --shadow-inset-paper: inset 2px 3px 6px rgba(176, 137, 104, 0.25), inset -1px -1px 4px rgba(255, 255, 255, 0.6);
+  --shadow-bevel: inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(176, 137, 104, 0.2), 2px 4px 6px rgba(176, 137, 104, 0.15);
+  --shadow-bevel-pressed: inset 2px 2px 4px rgba(176, 137, 104, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.4);
+}
+
+.bg-paper-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
