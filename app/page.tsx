@@ -166,14 +166,30 @@ const EditModal = ({ element, onClose, onSave }: any) => {
 
   return (
     <div className="fixed inset-0 bg-brand-charcoal/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-all" onPointerDown={onClose}>
+      <svg width="0" height="0" className="absolute pointer-events-none">
+        <defs>
+          <filter id="torn-edge-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+
       <motion.div 
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="bg-brand-cream border border-brand-brown/20 shadow-lifted rounded-xl p-6 w-full max-w-md max-h-[85vh] overflow-y-auto custom-scrollbar"
+        className="relative w-full max-w-md flex flex-col pointer-events-auto"
         onPointerDown={e => e.stopPropagation()}
+        style={{ filter: "drop-shadow(0 12px 24px rgba(176,137,104,0.3))" }}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div 
+          className="absolute inset-0 bg-brand-cream bg-paper-texture border border-brand-brown/20 rounded pointer-events-none"
+          style={{ filter: "url(#torn-edge-filter)" }}
+        />
+        
+        <div className="relative z-10 p-6 w-full max-h-[85vh] overflow-y-auto custom-scrollbar">
+          <div className="flex items-center justify-between mb-4">
            <h3 className="font-bold text-xl font-hand flex items-center gap-2 text-brand-charcoal">
              <Edit3 size={20} className="text-brand-orange" /> Edit Element
            </h3>
@@ -276,6 +292,7 @@ const EditModal = ({ element, onClose, onSave }: any) => {
         <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-brand-brown/10">
           <button onClick={onClose} className="px-5 py-2 text-sm text-brand-text font-bold hover:bg-black/5 rounded transition-colors">Cancel</button>
           <button onClick={() => onSave(formData)} className="px-5 py-2 text-sm bg-brand-yellow text-brand-charcoal font-bold rounded shadow-sm hover:shadow hover:bg-brand-yellow/90 active:scale-95 transition-all">Save Changes</button>
+        </div>
         </div>
       </motion.div>
     </div>
